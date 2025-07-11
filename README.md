@@ -1,3 +1,9 @@
+websitelink:
+https://space-tau-ten.vercel.app/
+
+
+
+
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_cGVhY2VmdWwtc2x1Zy03MS5jbGVyay5hY2NvdW50cy5kZXYk
 CLERK_SECRET_KEY=sk_test_lJqeZetrM57YfHgOmQRscl3cpQvTn5GFisHKTx4CKI
 CLERK_WEBHOOK_SECRET=whsec_nimIDdfmPr8b5QJMI5t8DvieoNyt4YJL
