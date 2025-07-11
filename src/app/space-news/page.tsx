@@ -61,20 +61,23 @@ export default function SpaceNewsPage() {
         const items = res.data.collection.items;
 
         const formattedNews: NewsItem[] = items
-          .map((item: any) => ({
-            title: item.data[0]?.title ?? '',
-            description: item.data[0]?.description ?? '',
-            date_created: item.data[0]?.date_created ?? '',
-            nasa_id: item.data[0]?.nasa_id ?? '',
-            thumbnail: item.links?.[0]?.href ?? '',
-          }))
-          .filter((i) => i.thumbnail && i.description && i.nasa_id && i.date_created)
-          .sort(
-            (a, b) =>
-              new Date(b.date_created).getTime() -
-              new Date(a.date_created).getTime()
-          )
-          .slice(0, 12);
+  .map((item: any): NewsItem => ({
+    title: item.data?.[0]?.title ?? '',
+    description: item.data?.[0]?.description ?? '',
+    date_created: item.data?.[0]?.date_created ?? '',
+    nasa_id: item.data?.[0]?.nasa_id ?? '',
+    thumbnail: item.links?.[0]?.href ?? '',
+  }))
+  .filter((item: NewsItem) => 
+    item.thumbnail && item.description && item.nasa_id && item.date_created
+  )
+  .sort(
+    (a: NewsItem, b: NewsItem) =>
+      new Date(b.date_created).getTime() -
+      new Date(a.date_created).getTime()
+  )
+  .slice(0, 12);
+
 
         setNews(formattedNews);
       } catch (err) {
