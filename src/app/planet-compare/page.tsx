@@ -113,7 +113,7 @@ export default function PlanetComparePage() {
       <div className="flex flex-col md:flex-row justify-center items-start gap-10">
         <PlanetSide id={leftId} setId={setLeftId} info={leftInfo} side="left" />
 
-        {/* VS separator */}
+        
         <div className="text-5xl font-bold text-center text-white/50 select-none">VS</div>
 
         <PlanetSide id={rightId} setId={setRightId} info={rightInfo} side="right" />

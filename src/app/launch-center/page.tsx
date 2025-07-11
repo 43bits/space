@@ -56,20 +56,20 @@ export default function SpaceShooterPage() {
   );
 }
 
-// 🎇 Background stars
-// 🎇 Moving Stars (scrolling background)
+
+
 function Stars() {
   const groupRef = useRef<THREE.Group>(null);
   const starCount = 300;
   const stars = useRef<THREE.Vector3[]>([]);
 
-  // initialize star positions
+ 
   useEffect(() => {
     stars.current = Array.from({ length: starCount }).map(() =>
       new THREE.Vector3(
         Math.random() * 10 - 5,
-        Math.random() * 12 - 6, // spread vertically
-        -Math.random() * 5 // parallax
+        Math.random() * 12 - 6, 
+        -Math.random() * 5 
       )
     );
   }, []);
@@ -85,7 +85,7 @@ function Stars() {
       }
     });
 
-    // update geometry
+   
     groupRef.current.children.forEach((mesh, i) => {
       mesh.position.copy(stars.current[i]);
     });
@@ -102,9 +102,6 @@ function Stars() {
     </group>
   );
 }
-
-
-// 🚀 Ship
 function Ship({ reset, running }: { reset: number; running: boolean }) {
   const ref = useRef<THREE.Group>(null);
   const velocity = useRef({ x: 0, y: 0 });
@@ -157,9 +154,6 @@ function Ship({ reset, running }: { reset: number; running: boolean }) {
     </group>
   );
 }
-
-// 🪨 Asteroids
-// 🪨 Asteroids with GLTF Model
 function Asteroids({
   onHit,
   reset,
@@ -223,11 +217,6 @@ function Asteroids({
   );
 }
 
-
-
-
-
-// ✨ Points using Coin GLTF with Emissive Glow
 function Points({ onCollect, reset, running }: { onCollect: () => void; reset: number; running: boolean }) {
   const refs = useRef<THREE.Group[]>([]);
   const { scene: coinScene, materials } = useGLTF('/coin/scene.gltf');
@@ -238,8 +227,6 @@ function Points({ onCollect, reset, running }: { onCollect: () => void; reset: n
     metalnessMap: '/coin/textures/Coin_metallicRoughness.png',
     emissiveMap: '/coin/textures/Coin_baseColor.png', // optional for glow
   });
-
-  // Apply textures to all materials
   useEffect(() => {
     coinScene.traverse((child) => {
       if ((child as THREE.Mesh).isMesh) {

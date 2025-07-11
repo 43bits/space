@@ -89,13 +89,13 @@ export default function SpaceNewsPage() {
 
   return (
     <div className="container max-w-5xl mx-auto px-4 py-10">
-      {/* Page Title */}
+    
       <div className="flex items-center gap-2 mb-6">
         <Telescope className="text-blue-500 w-6 h-6" />
         <h1 className="text-3xl font-bold text-blue-600">Space News & Daily Astronomy</h1>
       </div>
 
-      {/* Astronomy Picture of the Day */}
+     
       <section className="mb-10">
         <h2 className="text-2xl font-semibold mb-2">Astronomy Picture of the Day</h2>
         {loadingApod ? (
@@ -127,7 +127,7 @@ export default function SpaceNewsPage() {
         )}
       </section>
 
-      {/* Recent NASA News Grid */}
+     
       <section>
         <h2 className="text-2xl font-semibold mb-4">Recent NASA Highlights</h2>
         {loadingNews ? (

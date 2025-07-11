@@ -95,15 +95,13 @@ export default function Home() {
          title="Random Planet"
          description="Open a random planet profile"
          icon={Globe}
-           href="/random-planet" // <--- use href instead of onClick
+           href="/random-planet" 
           gradientFrom="pink-500"
             gradientTo="rose-600"
           />
 
        
       </div>
-
-      {/* Planet Info Modal */}
       
     </div>
   );

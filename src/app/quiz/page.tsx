@@ -9,7 +9,7 @@ type QuizQuestion = {
 };
 
 const TOTAL_QUESTIONS = 10;
-const TIME_LIMIT = 40; // seconds
+const TIME_LIMIT = 40;
 
 export default function QuizPage() {
   const [currentQuestion, setCurrentQuestion] = useState<QuizQuestion | null>(null);

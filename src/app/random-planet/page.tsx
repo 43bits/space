@@ -46,7 +46,7 @@ export default function RandomPlanetPage() {
         Random Planet: <span className="text-blue-400">{planet}</span>
       </h1>
 
-      {/* Future: You can embed a rotating 3D planet here using Drei + Fiber */}
+      {/*  3D planet here using Drei + Fiber */}
 
       <div className="max-w-2xl mx-auto bg-zinc-800 rounded-lg shadow-lg p-6 mt-10">
         <h2 className="text-2xl font-semibold mb-4 text-emerald-400">
