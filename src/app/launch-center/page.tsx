@@ -27,14 +27,16 @@ export default function SpaceShooterPage() {
   }
 
   return (
-    <div style={{ width: '100vw', height: '100vh', background: 'black', overflow: 'hidden' }}>
-      {/* 🧾 Scoreboard with curved styled UI */}
+    <div style={styles.container}>
       <div style={styles.scorePanel}>
         <span>🚀 Score: <strong>{score}</strong></span>
       </div>
 
-      {/* Game canvas */}
-      <Canvas orthographic camera={{ zoom: 100, position: [0, 0, 100] }}>
+      <Canvas
+        orthographic
+        camera={{ zoom: window.innerWidth < 768 ? 60 : 100, position: [0, 0, 100] }}
+        style={{ touchAction: 'none' }}
+      >
         <ambientLight />
         <Stars />
         <Ship reset={resetTrigger} running={running} />
@@ -42,7 +44,6 @@ export default function SpaceShooterPage() {
         <Points onCollect={() => setScore((s) => s + 1)} reset={resetTrigger} running={running} />
       </Canvas>
 
-      {/* Game Over Popup */}
       {gameOver && (
         <div style={styles.modalOverlay}>
           <div style={styles.modalBox}>
@@ -55,6 +56,7 @@ export default function SpaceShooterPage() {
     </div>
   );
 }
+
 
 
 
@@ -105,8 +107,12 @@ function Stars() {
 function Ship({ reset, running }: { reset: number; running: boolean }) {
   const ref = useRef<THREE.Group>(null);
   const velocity = useRef({ x: 0, y: 0 });
+  const isTouching = useRef(false);
+  const touchX = useRef(0);
 
   const { scene } = useGLTF('/models/rocket.gltf');
+
+  // Desktop keyboard controls
   useEffect(() => {
     const handleKey = (e: KeyboardEvent, down: boolean) => {
       const speed = down ? 0.1 : 0;
@@ -115,6 +121,7 @@ function Ship({ reset, running }: { reset: number; running: boolean }) {
       if (e.key === 'ArrowUp' || e.key === 'w') velocity.current.y = speed / 2;
       if (e.key === 'ArrowDown' || e.key === 's') velocity.current.y = -speed / 2;
     };
+
     const down = (e: KeyboardEvent) => handleKey(e, true);
     const up = (e: KeyboardEvent) => handleKey(e, false);
 
@@ -123,6 +130,34 @@ function Ship({ reset, running }: { reset: number; running: boolean }) {
     return () => {
       window.removeEventListener('keydown', down);
       window.removeEventListener('keyup', up);
+    };
+  }, []);
+
+  // Touch input for mobile
+  useEffect(() => {
+    const handleTouchStart = (e: TouchEvent) => {
+      isTouching.current = true;
+      touchX.current = e.touches[0].clientX;
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      const dx = e.touches[0].clientX - touchX.current;
+      velocity.current.x = dx * 0.0005;
+    };
+
+    const handleTouchEnd = () => {
+      isTouching.current = false;
+      velocity.current.x = 0;
+    };
+
+    window.addEventListener('touchstart', handleTouchStart);
+    window.addEventListener('touchmove', handleTouchMove);
+    window.addEventListener('touchend', handleTouchEnd);
+
+    return () => {
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
     };
   }, []);
 
@@ -154,6 +189,7 @@ function Ship({ reset, running }: { reset: number; running: boolean }) {
     </group>
   );
 }
+
 function Asteroids({
   onHit,
   reset,
@@ -303,9 +339,16 @@ function Points({ onCollect, reset, running }: { onCollect: () => void; reset: n
 
 // 🎨 Styled UI
 const styles = {
+  container: {
+    width: '100vw',
+    height: '100vh',
+    background: 'black',
+    overflow: 'hidden',
+    position: 'relative' as const,
+  },
   scorePanel: {
   position: 'absolute' as const,
-  top: '70px', // ⬅️ Moved below your navbar (adjust if your navbar height is different)
+  top: '0px', // ⬅️ No gap above
   left: '50%',
   transform: 'translateX(-50%)',
   background: 'linear-gradient(145deg, #0f0f0f, #1a1a1a)',
@@ -332,21 +375,22 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 999,
+    padding: '20px',
+    boxSizing: 'border-box' as const,
   },
-
   modalBox: {
     backgroundColor: '#111',
-    padding: '30px',
+    padding: '20px',
     borderRadius: '20px',
     border: '2px solid cyan',
     color: 'white',
     textAlign: 'center' as const,
     boxShadow: '0 0 30px cyan',
-    minWidth: '280px',
+    width: '100%',
+    maxWidth: '320px',
   },
-
   restartBtn: {
-    marginTop: '20px',
+    marginTop: '15px',
     padding: '12px 24px',
     fontSize: '1rem',
     borderRadius: '30px',
@@ -358,6 +402,7 @@ const styles = {
     transition: 'transform 0.2s',
   },
 };
+
 useGLTF.preload('/models/rocket.glb');
 useGLTF.preload('/video_game_coin/scene.gltf');
 
