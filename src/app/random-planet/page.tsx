@@ -1,6 +1,9 @@
 // app/random-planet/page.tsx
+export const dynamic = 'force-dynamic';
+
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import Image from 'next/image';
+
 // Planets List
 const planets = [
   'Mercury', 'Venus', 'Earth', 'Mars',
