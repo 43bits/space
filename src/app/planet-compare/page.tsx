@@ -8,7 +8,7 @@ import clsx from 'clsx';
 
 const PLANET_IDS = [
   'mercure', 'venus', 'earth', 'mars',
-  'jupiter', 'saturne', 'uranus', 'neptune', 'pluton',
+  'jupiter', 'saturne', 'uranus', 'neptune', 'pluto',
 ];
 
 function PlanetMesh({ texturePath }: { texturePath: string }) {
