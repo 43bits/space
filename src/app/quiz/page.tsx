@@ -1,12 +1,67 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 type QuizQuestion = {
   question: string;
   options: string[];
   correctAnswer: string;
 };
+
+// Local fallback questions
+const LOCAL_QUESTIONS: QuizQuestion[] = [
+  {
+    question: "Which planet is known as the Red Planet?",
+    options: ["Earth", "Mars", "Jupiter", "Venus"],
+    correctAnswer: "Mars",
+  },
+  {
+    question: "Which planet has the most moons?",
+    options: ["Earth", "Mars", "Saturn", "Neptune"],
+    correctAnswer: "Saturn",
+  },
+  {
+    question: "What is the closest planet to the Sun?",
+    options: ["Venus", "Mercury", "Mars", "Jupiter"],
+    correctAnswer: "Mercury",
+  },
+  {
+    question: "Which planet is famous for its rings?",
+    options: ["Jupiter", "Saturn", "Uranus", "Neptune"],
+    correctAnswer: "Saturn",
+  },
+  {
+    question: "Which is the largest planet in our solar system?",
+    options: ["Earth", "Jupiter", "Saturn", "Neptune"],
+    correctAnswer: "Jupiter",
+  },
+  {
+    question: "What is the hottest planet in the solar system?",
+    options: ["Mercury", "Venus", "Mars", "Earth"],
+    correctAnswer: "Venus",
+  },
+  {
+    question: "Which planet spins on its side?",
+    options: ["Mars", "Jupiter", "Uranus", "Earth"],
+    correctAnswer: "Uranus",
+  },
+  {
+    question: "What galaxy do we live in?",
+    options: ["Andromeda", "Milky Way", "Whirlpool", "Sombrero"],
+    correctAnswer: "Milky Way",
+  },
+  {
+    question: "Which planet is known for its Great Red Spot?",
+    options: ["Jupiter", "Neptune", "Earth", "Mars"],
+    correctAnswer: "Jupiter",
+  },
+  {
+    question: "Which planet is farthest from the Sun?",
+    options: ["Neptune", "Uranus", "Pluto", "Saturn"],
+    correctAnswer: "Neptune",
+  },
+];
 
 const TOTAL_QUESTIONS = 10;
 const TIME_LIMIT = 40;
@@ -16,22 +71,64 @@ export default function QuizPage() {
   const [selected, setSelected] = useState<string | null>(null);
   const [score, setScore] = useState(0);
   const [started, setStarted] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [questionNumber, setQuestionNumber] = useState(1);
   const [timeLeft, setTimeLeft] = useState(TIME_LIMIT);
+  const [usedIndexes, setUsedIndexes] = useState<number[]>([]);
 
-  const fetchQuestion = async () => {
-    setLoading(true);
+  const fetchGeminiQuestion = async (): Promise<QuizQuestion | null> => {
     try {
-      const res = await fetch('/api/quiz');
-      const data = await res.json();
-      setCurrentQuestion(data);
+      const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+
+      const prompt = `
+Create one fun and factual multiple-choice quiz question about astronomy. Format it exactly like:
+Question: What planet is known as the Red Planet?
+A. Earth
+B. Mars*
+C. Jupiter
+D. Venus
+      `;
+
+      const result = await model.generateContent(prompt);
+      const text = await result.response.text();
+
+      const lines = text.trim().split('\n').filter(Boolean);
+      const questionLine = lines.find(l => l.toLowerCase().startsWith('question:'));
+      const optionLines = lines.filter(l => /^[A-Da-d][.)]/.test(l));
+
+      if (!questionLine || optionLines.length !== 4) throw new Error("Invalid Gemini format");
+
+      const question = questionLine.replace(/^Question:\s*/i, '').trim();
+
+      const options = optionLines.map(opt =>
+        opt.replace(/^[A-Da-d][.)]\s*/, '').replace('*', '').trim()
+      );
+
+      const correctRaw = optionLines.find(opt => opt.includes('*'));
+      if (!correctRaw) throw new Error("No correct option marked");
+
+      const correctAnswer = correctRaw.replace(/^[A-Da-d][.)]\s*/, '').replace('*', '').trim();
+
+      return { question, options, correctAnswer };
     } catch (err) {
-      console.error('Failed to fetch question:', err);
-    } finally {
-      setLoading(false);
-      setTimeLeft(TIME_LIMIT);
+      console.error("⚠️ Gemini error, using fallback:", err);
+      return null;
     }
+  };
+
+  const loadQuestion = async () => {
+    let question = await fetchGeminiQuestion();
+
+    if (!question) {
+      const unused = LOCAL_QUESTIONS.filter((_, i) => !usedIndexes.includes(i));
+      const random = unused[Math.floor(Math.random() * unused.length)];
+      const index = LOCAL_QUESTIONS.indexOf(random);
+      setUsedIndexes(prev => [...prev, index]);
+      question = random;
+    }
+
+    setCurrentQuestion(question);
+    setTimeLeft(TIME_LIMIT);
   };
 
   useEffect(() => {
@@ -57,27 +154,30 @@ export default function QuizPage() {
 
     setTimeout(() => {
       if (questionNumber >= TOTAL_QUESTIONS) {
-        alert(`🌟 Quiz Complete! You scored ${score + (isCorrect ? 5 : 0)} out of ${TOTAL_QUESTIONS * 5}`);
-        setStarted(false);
-        setScore(0);
-        setQuestionNumber(1);
-        setSelected(null);
-        setCurrentQuestion(null);
+        alert(`🌟 Quiz Complete! You scored ${score + (isCorrect ? 5 : 0)} / ${TOTAL_QUESTIONS * 5}`);
+        resetQuiz();
         return;
       }
 
       setQuestionNumber(q => q + 1);
       setSelected(null);
-      fetchQuestion();
+      loadQuestion();
     }, 1500);
   };
 
-  const startQuiz = () => {
-    setStarted(true);
+  const resetQuiz = () => {
+    setStarted(false);
     setScore(0);
     setQuestionNumber(1);
-    setTimeLeft(TIME_LIMIT);
-    fetchQuestion();
+    setSelected(null);
+    setCurrentQuestion(null);
+    setUsedIndexes([]);
+  };
+
+  const startQuiz = () => {
+    resetQuiz();
+    setStarted(true);
+    loadQuestion();
   };
 
   const progress = (timeLeft / TIME_LIMIT) * 100;
@@ -109,7 +209,7 @@ export default function QuizPage() {
             />
           </div>
 
-          {loading || !currentQuestion ? (
+          {!currentQuestion ? (
             <p className="text-center text-slate-400">Loading question...</p>
           ) : (
             <>
