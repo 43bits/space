@@ -43,7 +43,7 @@ export default function Home() {
         </p>
       </div>
 
-      {/* Make the grid scrollable if content overflows */}
+     
       <div
         className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
         style={{ maxHeight: "calc(100vh - 220px)", overflowY: "auto", paddingBottom: "2rem" }}
@@ -74,15 +74,6 @@ export default function Home() {
           gradientFrom="orange-500"
           gradientTo="red-600"
         />
-
-        <ActionCard
-          title="Quiz Satellite"
-          description="Track artificial satellites orbiting Earth"
-          icon={SatelliteDish}
-          href="/quiz"
-          gradientFrom="emerald-500"
-          gradientTo="green-600"
-        />
          <ActionCard
           title="Astronomy News"
           description="Latest from NASA, ESA, and beyond"
@@ -91,19 +82,24 @@ export default function Home() {
           gradientFrom="blue-600"
           gradientTo="cyan-500"
         />
+         <ActionCard
+          title="Quiz Satellite"
+          description="Track artificial satellites orbiting Earth"
+          icon={SatelliteDish}
+          href="/quiz"
+          gradientFrom="emerald-500"
+          gradientTo="green-600"
+        />
         <ActionCard
          title="Random Planet"
          description="Open a random planet profile"
          icon={Globe}
-           href="/random-planet" // <--- use href instead of onClick
+           href="/random-planet" 
           gradientFrom="pink-500"
             gradientTo="rose-600"
           />
-
-       
+         
       </div>
-
-      {/* Planet Info Modal */}
       
     </div>
   );

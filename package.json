@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.16.0",
+    "@google/genai": "^1.9.0",
     "@google/generative-ai": "^0.24.1",
     "@radix-ui/react-avatar": "^1.1.7",
     "@radix-ui/react-dialog": "^1.1.10",
@@ -39,7 +40,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@types/node": "^20.19.7",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "tailwindcss": "^4",

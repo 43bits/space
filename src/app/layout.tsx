@@ -17,8 +17,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MEss",
-  description: "Calculate MEALs efficiently ",
+  title: "SpaceVoyager",
+  description: "Space Explorer  ",
 };
 
 export default function RootLayout({
@@ -28,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <ConvexClerkProvider>
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ThemeProvider attribute="class"
             defaultTheme="system"
@@ -36,9 +36,6 @@ export default function RootLayout({
             disableTransitionOnChange
         >
         <Navbar/>
-
-         
-
         <main className="pt-24 flex-grow">{children}</main>
         </ThemeProvider>
         <Toaster/>

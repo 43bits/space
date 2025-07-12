@@ -61,23 +61,23 @@ export default function SpaceNewsPage() {
         const items = res.data.collection.items;
 
         const formattedNews: NewsItem[] = items
-          .map((item: any) => ({
-            title: item.data[0]?.title ?? "",
-            description: item.data[0]?.description ?? "",
-            date_created: item.data[0]?.date_created ?? "",
-            nasa_id: item.data[0]?.nasa_id ?? "",
-            thumbnail: item.links?.[0]?.href ?? "",
-          }))
-          .filter(
-            (i: NewsItem) =>
-              i.thumbnail && i.description && i.nasa_id && i.date_created
-          )
-          .sort(
-            (a: NewsItem, b: NewsItem) =>
-              new Date(b.date_created).getTime() -
-              new Date(a.date_created).getTime()
-          )
-          .slice(0, 12);
+  .map((item: any): NewsItem => ({
+    title: item.data?.[0]?.title ?? '',
+    description: item.data?.[0]?.description ?? '',
+    date_created: item.data?.[0]?.date_created ?? '',
+    nasa_id: item.data?.[0]?.nasa_id ?? '',
+    thumbnail: item.links?.[0]?.href ?? '',
+  }))
+  .filter((item: NewsItem) => 
+    item.thumbnail && item.description && item.nasa_id && item.date_created
+  )
+  .sort(
+    (a: NewsItem, b: NewsItem) =>
+      new Date(b.date_created).getTime() -
+      new Date(a.date_created).getTime()
+  )
+  .slice(0, 12);
+
 
         setNews(formattedNews);
       } catch (err) {
@@ -92,7 +92,7 @@ export default function SpaceNewsPage() {
 
   return (
     <div className="container max-w-5xl mx-auto px-4 py-10">
-      {/* Page Title */}
+    
       <div className="flex items-center gap-2 mb-6">
         <Telescope className="text-blue-500 w-6 h-6" />
         <h1 className="text-3xl font-bold text-blue-600">
@@ -100,7 +100,7 @@ export default function SpaceNewsPage() {
         </h1>
       </div>
 
-      {/* Astronomy Picture of the Day */}
+     
       <section className="mb-10">
         <h2 className="text-2xl font-semibold mb-2">
           Astronomy Picture of the Day
@@ -136,7 +136,7 @@ export default function SpaceNewsPage() {
         )}
       </section>
 
-      {/* Recent NASA News Grid */}
+     
       <section>
         <h2 className="text-2xl font-semibold mb-4">Recent NASA Highlights</h2>
         {loadingNews ? (
