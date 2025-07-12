@@ -13,12 +13,7 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
-import type * as admin from "../admin.js";
 import type * as http from "../http.js";
-import type * as mealRequests from "../mealRequests.js";
-import type * as mealSelections from "../mealSelections.js";
-import type * as menu from "../menu.js";
-import type * as profile from "../profile.js";
 import type * as users from "../users.js";
 
 /**
@@ -30,12 +25,7 @@ import type * as users from "../users.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
-  admin: typeof admin;
   http: typeof http;
-  mealRequests: typeof mealRequests;
-  mealSelections: typeof mealSelections;
-  menu: typeof menu;
-  profile: typeof profile;
   users: typeof users;
 }>;
 export declare const api: FilterApi<
