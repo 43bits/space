@@ -50,7 +50,7 @@ function Navbar() {
                   Planets
                 </Button>
               </Link>
-              
+
               <Link href="/profile">
                 <Button variant="outline" className="gap-2">
                   Profile
@@ -80,7 +80,7 @@ function Navbar() {
                     Planets
                   </Button>
                 </Link>
-                
+
                 <Link href="/profile" className="w-full">
                   <Button className="w-full gap-2" variant="outline">
                     Profile
